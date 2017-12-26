@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <button id="tan">dialog</button>
+    <div id="box"></div>
+    <script>
+        function ShowMsg(obj) {
+            this.obj = obj;
+            this.tan = document.getElementById('tan');
+            this.box = document.getElementById('box');
+            this.createbox();
+            this.bindClick();
+            this.mousedown();
+            this.mouseup();
+            this.btn();
+        }
+        ShowMsg.prototype = {
+            constructor: ShowMsg,
+            createbox: function() {
+                this.box.innerHTML = `<h3>${this.obj.title}</h3><p>${this.obj.content}</p><button>${this.obj.buttons[0]}</button><button>${this.obj.buttons[1]}</button>`;
+                this.btns = document.getElementById('box').getElementsByTagName('button');
+            },
+            bindClick: function() {
+                var that = this;
+                this.tan.onclick = function() {
+                    that.box.style.display = 'block';
+                }
+            },
+            btn: function() {
+                this.btns[0].onclick = this.obj.successCallback;
+                this.btns[1].onclick = this.obj.cancelCallback;
+            },
+            mousedown: function() {
+                var that = this;
+                this.box.onmousedown = function(e) {
+                    var e = e || window.event;
+                    that.x = e.clientX - that.box.offsetLeft;
+                    that.y = e.clientY - that.box.offsetTop;
+                    that.mousemove();
+                }
+            },
+            mousemove: function() {
+                var that = this;
+                document.onmousemove = function(e) {
+                    var e = e || window.event;
+                    var left = e.clientX - that.x;
+                    var top = e.clientY - that.y;
+                    var maxW = document.documentElement.clientWidth - that.box.offsetWidth;
+                    var maxH = document.documentElement.clientHeight - that.box.offsetHeight;
+                    left = Math.max(0, Math.min(left, maxW));
+                    top = Math.max(0, Math.min(top, maxH));
+                    that.box.style.left = left + 'px';
+                    that.b
+                    ox.style.top = top + 'px';
+                }
+            },
+            mouseup: function() {
+                this.box.onmouseup = function() {
+                    document.onmousemove = null;
+                }
+            },
+        }
+        new ShowMsg({
+            title: "遗憾",
+            content: "与其让你在我怀中枯萎 宁愿你犯错后悔 让你飞向梦中的世界 留我独自伤悲<br/><br/> 与其让你在我爱中憔悴 宁愿你受伤流泪 莫非要你尝尽了苦悲 才懂真情可贵",
+            buttons: ["确认", "取消"],
+            successCallback: function() {
+                this.parentNode.parentNode.removeChild(this.parentNode)
+            }, // 点击确认按钮的回调函数
+            cancelCallback: function() {
+                    box.style.display = 'none'
+                } // 点击取消按钮的回调函数
+        })
+    </script>
+</body>
+
+</html>
